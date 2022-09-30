@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     public int currentTurnDice;
     public int totalFilledDice;
+    public Dice dice;
 
     public PlayerController oppPlayer;
 
@@ -20,9 +21,11 @@ public class PlayerController : MonoBehaviour
     private Color fadedColor = new Color(1, 1, 1, 0);
     private Color showColor = new Color(1, 1, 1, 1);
 
-    public int RollNewDice()
+    public IEnumerator RollNewDice()
     {
-        return Random.Range(1, 7);
+        yield return dice.RollTheDice();
+        currentTurnDice = dice.finalSide;
+        displayDiceNumber.text = currentTurnDice.ToString();
     }
 
     public void StateHandle(GameState newState)
@@ -33,8 +36,8 @@ public class PlayerController : MonoBehaviour
         {
             case GameState.RollNewDice:
                 displayDiceNumber.transform.parent.GetComponent<Image>().color = showColor;
-                currentTurnDice = RollNewDice();
-                displayDiceNumber.text = currentTurnDice.ToString();
+                StartCoroutine(RollNewDice());
+                
                 StateHandle(GameState.AddDice);
                 break;
             case GameState.AddDice:
