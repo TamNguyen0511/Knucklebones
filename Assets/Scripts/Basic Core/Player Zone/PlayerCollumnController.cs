@@ -68,9 +68,9 @@ public class PlayerCollumnController : MonoBehaviour
             }
         }
 
-        TotalHoldingDiceValue();
-
         DenyOppSameValueDice(numberToAdd);
+
+        TotalHoldingDiceValue();
 
         player.totalFilledDice++;
 
@@ -114,8 +114,10 @@ public class PlayerCollumnController : MonoBehaviour
                     diceData.isHoldingDice = false;
                     playerCollumn.TotalHoldingDiceValue();
                     playerCollumn.player.totalFilledDice--;
+                    
                 }
             }
         }
+        player.oppPlayer.UpdateTotalPoint();
     }
 }

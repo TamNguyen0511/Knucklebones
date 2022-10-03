@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
 
     #region Properties UI
     public Text displayDiceNumber;
+    public Text playerStateTxt;
+    public Text playerTotalPointTxt;
+    //public Text displayDiceNumber;
     #endregion
 
     private Color fadedColor = new Color(1, 1, 1, 0);
@@ -23,22 +26,22 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator RollNewDice()
     {
-        yield return dice.RollTheDice();
+        yield return StartCoroutine(dice.RollTheDice());
         currentTurnDice = dice.finalSide;
         displayDiceNumber.text = currentTurnDice.ToString();
+        StateHandle(GameState.AddDice);
     }
 
     public void StateHandle(GameState newState)
     {
         if (playerCurrentState == newState) return;
         playerCurrentState = newState;
+        playerStateTxt.text = playerCurrentState.ToString();
         switch (playerCurrentState)
         {
             case GameState.RollNewDice:
                 displayDiceNumber.transform.parent.GetComponent<Image>().color = showColor;
                 StartCoroutine(RollNewDice());
-                
-                StateHandle(GameState.AddDice);
                 break;
             case GameState.AddDice:
                 foreach (PlayerCollumnController playerCollumn in playerCollumns)
@@ -53,6 +56,7 @@ public class PlayerController : MonoBehaviour
                 oppPlayer.StateHandle(GameState.RollNewDice);
                 break;
             case GameState.WaitInOppTurn:
+                UpdateTotalPoint();
                 displayDiceNumber.transform.parent.GetComponent<Image>().color = fadedColor;
                 foreach (PlayerCollumnController playerCollumn in playerCollumns)
                 {
@@ -61,6 +65,11 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
             case GameState.Endgame:
+                foreach (PlayerCollumnController playerCollumn in playerCollumns)
+                {
+                    playerCollumn.isAddable = false;
+                    playerCollumn.GetComponent<Button>().interactable = false;
+                }
                 GameController.Instance.EndGame();
                 break;
         }
@@ -71,5 +80,15 @@ public class PlayerController : MonoBehaviour
             return;
         StateHandle(GameState.Endgame);
         oppPlayer.StateHandle(GameState.Endgame);
+    }
+
+    public void UpdateTotalPoint()
+    {
+
+        int currentTotalPoint = 0;
+        foreach (PlayerCollumnController pCollum in playerCollumns)
+            currentTotalPoint += pCollum.totalCollumnScore;
+
+        playerTotalPointTxt.text = currentTotalPoint.ToString();
     }
 }

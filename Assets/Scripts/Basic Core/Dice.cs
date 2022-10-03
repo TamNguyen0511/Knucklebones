@@ -10,14 +10,14 @@ public class Dice : MonoBehaviour
     [SerializeField] private Sprite[] diceSides;
 
     // Reference to sprite renderer to change sprites
-    private Sprite rend;
+    [SerializeField] private Image image;
 
     // Use this for initialization
     private void Start()
     {
 
         // Assign Renderer component
-        rend = GetComponent<Image>().sprite;
+        image = GetComponent<Image>();
 
         // Load dice sides sprites to array from DiceSides subfolder of Resources folder
         //diceSides = Resources.LoadAll<Sprite>("DiceSides/");
@@ -47,7 +47,7 @@ public class Dice : MonoBehaviour
             randomDiceSide = Random.Range(0, 5);
 
             // Set sprite to upper face of dice from array according to random value
-            rend = diceSides[randomDiceSide];
+            image.sprite = diceSides[randomDiceSide];
 
             // Pause before next itteration
             yield return new WaitForSeconds(0.05f);
