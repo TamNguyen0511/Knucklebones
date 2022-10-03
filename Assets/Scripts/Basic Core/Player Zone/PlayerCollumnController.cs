@@ -66,6 +66,10 @@ public class PlayerCollumnController : MonoBehaviour
                 playedDices[i].displayText.text = numberToAdd.ToString();
                 break;
             }
+            if (i >= 2 && playedDices[2].isHoldingDice)
+            {
+                return;
+            }
         }
 
         DenyOppSameValueDice(numberToAdd);
@@ -114,7 +118,7 @@ public class PlayerCollumnController : MonoBehaviour
                     diceData.isHoldingDice = false;
                     playerCollumn.TotalHoldingDiceValue();
                     playerCollumn.player.totalFilledDice--;
-                    
+
                 }
             }
         }
